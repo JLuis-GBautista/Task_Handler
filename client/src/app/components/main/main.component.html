@@ -1,0 +1,124 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span class="logo">MiApp</span>
+  <span class="spacer"></span>
+  <button mat-flat-button color="accent" (click)="openCreateTaskForm()">
+    <mat-icon>add</mat-icon> Crear Perfil
+  </button>
+  <button mat-button [matMenuTriggerFor]="menu">
+    {{ user()?.name }}
+    <mat-icon>arrow_drop_down</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="showUserInfo()">
+    <mat-icon>info</mat-icon>
+    Info de usuario
+  </button>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    Cerrar sesión
+  </button>
+  <button mat-menu-item (click)="refreshList('Pending')">
+      <mat-icon>info</mat-icon>
+    Tareas Pendientes
+  </button>
+  <button mat-menu-item (click)="refreshList('Completed')">
+      <mat-icon>info</mat-icon>
+    Tareas Completadas
+  </button>
+</mat-menu>
+
+@if (showCreateTaskForm()) {
+  <div class="modal-overlay" (click)="closeCreateTaskForm()">
+    <mat-card class="create-profile-form" (click)="$event.stopPropagation()">
+      <mat-card-title>Crear Nueva Tarea</mat-card-title>
+      <mat-card-content>
+        <form (ngSubmit)="createTask()">
+          <div class="form-field-group">
+            <mat-form-field appearance="outline">
+              <mat-label>Titulo</mat-label>
+              <input matInput [(ngModel)]="newTask().title" name="title" required>
+            </mat-form-field>
+          </div>
+
+          <div class="form-field-group">
+            <mat-form-field appearance="outline">
+              <mat-label>Descripción</mat-label>
+              <input matInput type="number" [(ngModel)]="newTask().description" name="description" required>
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit">Crear</button>
+            <button mat-stroked-button color="warn" type="button" (click)="closeCreateTaskForm()">Cancelar</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
+
+@if (showUpdateTaskForm()) {
+  <div class="modal-overlay" (click)="closeUpdateTaskForm()">
+    <mat-card class="create-profile-form" (click)="$event.stopPropagation()">
+      <mat-card-title>Editar Tarea</mat-card-title>
+      <mat-card-content>
+        <form (ngSubmit)="updateTaskFunc()">
+          <div class="form-field-group">
+            <mat-form-field appearance="outline">
+              <mat-label>Titulo</mat-label>
+              <input matInput [(ngModel)]="updateTask().title" name="title" required>
+            </mat-form-field>
+          </div>
+
+          <div class="form-field-group">
+            <mat-form-field appearance="outline">
+              <mat-label>Descripción</mat-label>
+              <input matInput type="number" [(ngModel)]="updateTask().description" name="description" required>
+            </mat-form-field>
+          </div>
+
+          <div class="form-field-group">
+            <label class="radio-label">Estado</label>
+            <mat-radio-group [(ngModel)]="updateTask().status" name="status" required>
+              <mat-radio-button class="custom-radio" value="Pending">Pendiente</mat-radio-button>
+              <mat-radio-button class="custom-radio" value="Completed">Completada</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit">Editar</button>
+            <button mat-stroked-button color="warn" type="button" (click)="closeUpdateTaskForm()">Cancelar</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
+
+@if (cards().length > 0) {
+  <div class="cards-container">
+  @for (task of cards(); track task.title) {
+    <mat-card class="data-card">
+      <mat-card-title>{{ task.title }}</mat-card-title>
+      <mat-card-content>
+        <p><strong>Descripción:</strong> {{ task.description }}</p>
+        <p><strong>Estatus:</strong> {{ task.status }}</p>
+      </mat-card-content>
+      <mat-card-actions class="card-actions">
+        <button mat-flat-button color="primary" (click)="openUpdateTaskForm(task)">
+          <mat-icon>edit</mat-icon> Editar
+        </button>
+        <button mat-flat-button color="warn" (click)="deleteTaskFunc(task.id)">
+          <mat-icon>delete</mat-icon> Eliminar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>
+} @else {
+  <div class="no-profiles-message">
+    <p>No hay perfiles disponibles. ¡Crea uno nuevo!</p>
+  </div>
+}

@@ -1,0 +1,8 @@
+services:
+  backend:
+    image: server_capital:latest
+    container_name: server_capital
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env.prod
