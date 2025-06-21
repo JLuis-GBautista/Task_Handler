@@ -4,6 +4,12 @@ import { tasks } from "../../db/schemas/public";
 import { eq } from "drizzle-orm";
 
 export default class TaskRepository {
+  static async findById(id: number) {
+    return await db.query.tasks.findFirst({
+      where: (task, { eq }) => eq(task.id, id)
+    });
+  }
+
   static async findManyByUserId(userId: number, select?: StatusT) {
     if (!select)
       return await db.query.tasks.findMany({
@@ -19,7 +25,7 @@ export default class TaskRepository {
   }
 
   static async insert(task: InsertTask) {
-    return (await db.insert(tasks).values(task));
+    return (await db.insert(tasks).values(task))[0];
   }
 
   static async update(taskId: number, task: UpdateTask) {

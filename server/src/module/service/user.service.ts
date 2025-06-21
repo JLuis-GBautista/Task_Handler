@@ -23,8 +23,9 @@ export const loginService = async (email: string, password: string) => {
 export const registerService = async (body: InsertUser) => {
   body.password = await encryptPassword(body.password);
   const newUser = await UserRepository.insertUser(body);
-  const accessToken = JWT_Auth.generateToken(newUser.id);
-  const refreshToken = JWT_Auth.generateRefreshToken(newUser.id);
+  console.log(newUser);
+  const accessToken = JWT_Auth.generateToken(newUser.insertId);
+  const refreshToken = JWT_Auth.generateRefreshToken(newUser.insertId);
   return {
     accessToken,
     refreshToken
